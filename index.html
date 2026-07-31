@@ -3,8 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>A Special Surprise ❤️</title>
+  <title>A Journey of Us ❤️</title>
   <style>
+    :root {
+      --primary-color: #ff4d6d;
+      --secondary-color: #ffe6eb;
+      --text-color: #555;
+      --heading-color: #c9184a;
+      --back-btn-color: #a8a8a8;
+    }
+
     body {
       display: flex;
       flex-direction: column;
@@ -14,218 +22,294 @@
       margin: 0;
       padding: 20px;
       box-sizing: border-box;
-      background-color: #ffe6eb;
+      background-color: var(--secondary-color);
       font-family: 'Comic Sans MS', 'Arial', sans-serif;
       text-align: center;
       overflow-x: hidden;
     }
 
+    /* Standard Card Container */
     .card {
       background: white;
-      padding: 25px;
+      padding: 30px;
       border-radius: 20px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-      max-width: 420px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      max-width: 450px;
       width: 100%;
       box-sizing: border-box;
+      position: relative;
+      animation: fadeIn 0.6s ease-out;
+      display: none; /* Hidden by default */
     }
 
+    /* Utility class to show a step */
+    .show { display: block; }
+
+    /* Universal Back Button Styling */
+    .back-btn {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: none;
+      border: none;
+      color: var(--back-btn-color);
+      font-size: 0.9rem;
+      cursor: pointer;
+      padding: 5px;
+      font-weight: bold;
+      transition: color 0.2s;
+    }
+    .back-btn:hover { color: var(--primary-color); }
+
+    /* Photo Styling */
     .photo {
       width: 100%;
-      max-height: 220px;
+      max-height: 230px;
       object-fit: cover;
       border-radius: 15px;
-      margin-bottom: 15px;
-    }
-
-    h1 {
-      color: #ff4d6d;
-      font-size: 1.7rem;
-      margin-bottom: 10px;
-    }
-
-    p {
-      color: #555;
-      font-size: 1.05rem;
-      line-height: 1.5;
       margin-bottom: 20px;
+      border: 3px solid #fdf2f4;
     }
 
+    /* Headings & Text */
+    h1 { color: var(--heading-color); font-size: 1.9rem; margin-bottom: 12px; }
+    h2 { color: var(--primary-color); font-size: 1.5rem; margin-top: 0; }
+    p { color: var(--text-color); font-size: 1.1rem; line-height: 1.6; margin-bottom: 25px; }
+
+    /* Standard Buttons */
     .btn-container {
       display: flex;
       justify-content: center;
       gap: 15px;
       position: relative;
-      min-height: 50px;
+      min-height: 60px;
+      margin-top: 10px;
     }
 
-    button {
-      padding: 12px 25px;
-      font-size: 1rem;
+    button.main-action {
+      padding: 15px 30px;
+      font-size: 1.1rem;
       font-weight: bold;
       border: none;
-      border-radius: 25px;
+      border-radius: 30px;
       cursor: pointer;
-      transition: transform 0.2s ease;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
 
-    .primary-btn {
-      background-color: #ff4d6d;
-      color: white;
-      box-shadow: 0 4px 10px rgba(255, 77, 109, 0.4);
-    }
-
-    .secondary-btn {
-      background-color: #a8a8a8;
+    .yes-btn {
+      background-color: var(--primary-color);
       color: white;
     }
+    .yes-btn:hover { transform: scale(1.05) translateY(-2px); box-shadow: 0 6px 15px rgba(255, 77, 109, 0.4); }
 
+    .maybe-btn { background-color: #ffb3c1; color: var(--heading-color); }
+
+    /* FIX: Runaway 'No' Button - Fixed size to prevent stretching */
     #noBtn {
+      background-color: var(--back-btn-color);
+      color: white;
       position: absolute;
       right: 20px;
+      width: 120px; /* FIXED WIDTH */
+      height: 50px; /* FIXED HEIGHT */
+      padding: 0; /* Remove padding to keep size exact */
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    /* Envelope Styling */
-    .envelope-wrapper {
+    /* Gift Section Styling */
+    .gift-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .gift-item {
+      background: #fdf2f4;
+      padding: 20px 10px;
+      border-radius: 15px;
       cursor: pointer;
-      margin: 20px auto;
-      display: inline-block;
-      transition: transform 0.3s ease;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
     }
-
-    .envelope-wrapper:hover {
-      transform: scale(1.05);
+    .gift-item:hover {
+      background: white;
+      border-color: var(--primary-color);
+      transform: translateY(-5px);
     }
+    .gift-icon { font-size: 2.5rem; display: block; margin-bottom: 10px; }
+    .gift-label { font-weight: bold; color: var(--heading-color); font-size: 0.9rem; }
 
-    .envelope-icon {
-      font-size: 80px;
-      display: block;
-    }
-
-    /* Secret Letter Styling */
-    .letter-box {
+    /* Result Panels (Heart, Flowers, Letter) */
+    .result-panel {
       display: none;
+      border-top: 2px dashed var(--secondary-color);
+      padding-top: 20px;
+      margin-top: 20px;
+      animation: slideDown 0.5s ease;
+    }
+
+    .letter-box {
       background: #fffdf9;
-      border: 2px dashed #ff4d6d;
       padding: 20px;
       border-radius: 15px;
       text-align: left;
-      margin-top: 15px;
-      animation: fadeIn 0.8s ease;
+      border: 1px solid #f0eada;
     }
+    .letter-box p { font-family: 'Georgia', serif; font-style: italic; color: #444; font-size: 1rem;}
 
-    .letter-box p {
-      color: #444;
-      font-family: 'Georgia', serif;
-      font-style: italic;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    /* Animations */
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
 <body>
 
   <!-- STEP 1: Main Proposal -->
-  <div class="card" id="step1">
-    <img src="YOUR_COVER_IMAGE_URL" alt="Us" class="photo">
+  <div class="card show" id="step1">
+    <img src="YOUR_PROPOSAL_COVER_IMAGE_URL" alt="Us" class="photo">
     <h1>Will you be my girlfriend? 💖</h1>
     <p>Every moment with you is my favorite... so I wanted to make this official! 🥰</p>
     
     <div class="btn-container">
-      <button class="primary-btn" onclick="goToStep2()">YES! 🌹</button>
-      <button class="secondary-btn" id="noBtn" onmouseover="moveNoButton()" onclick="moveNoButton()">No 😜</button>
+      <button class="main-action yes-btn" onclick="showStep(2)">YES! 🌹</button>
+      <!-- FIX applied here: fixed size button -->
+      <button class="main-action" id="noBtn" onmouseover="moveNoButton()" onclick="moveNoButton()">No 😜</button>
     </div>
   </div>
 
-  <!-- STEP 2: First Message & Follow-up Question -->
-  <div class="card" id="step2" style="display: none;">
+  <!-- STEP 2: The Honesty Test -->
+  <div class="card" id="step2">
+    <button class="back-btn" onclick="showStep(1)">← Back</button>
     <h1>Yay! 🎉❤️</h1>
-    <p>I knew you’d say yes (or maybe you just couldn't catch the other button 😉).</p>
-    <hr style="border: 0; border-top: 1px solid #ffe6eb; margin: 20px 0;">
-    <h1>Be honest though...</h1>
+    <p>I knew you’d say yes! You've made me the happiest person. 🥰</p>
+    <hr style="border: 0; border-top: 1px solid var(--secondary-color); margin: 20px 0;">
+    <h2>Be honest though...</h2>
     <p>Did you try clicking the 'No' button first? 🧐</p>
     
     <div class="btn-container">
-      <button class="primary-btn" onclick="showSadResult()">Yes 🙈</button>
-      <button class="primary-btn" style="background-color: #38b000;" onclick="showEnvelopeResult()">No 😇</button>
+      <button class="main-action maybe-btn" onclick="showStep('sadResult')">Yes 🙈</button>
+      <button class="main-action yes-btn" style="background-color: #38b000;" onclick="showStep('gifts')">No 😇</button>
     </div>
   </div>
 
-  <!-- STEP 3A: If She Tried to Click NO -->
-  <div class="card" id="sadResult" style="display: none;">
-    <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHY5eGZwc2x0M2E4aHN4eDBya29sOHl2bzNrbnR6MHdpczE1YzF0eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/d22A71O7A22v568w/giphy.gif" alt="Sad Cute Cartoon" class="photo">
+  <!-- STEP 3A: If She Admits She Tried 'No' -->
+  <div class="card" id="sadResult">
+    <button class="back-btn" onclick="showStep(2)">← Back</button>
+    <img src="https://media.giphy.com/media/d22A71O7A22v568w/giphy.gif" alt="Sad Cute Cartoon" class="photo">
     <h1>I saw that! 🥺</h1>
-    <p>How could you try to click No?! My heart is broken into a million pieces... 💔</p>
-    <button class="primary-btn" onclick="goToStep2()">Give me another chance 🥺</button>
+    <p>How could you even try?! My heart is broken... 💔</p>
+    <button class="main-action yes-btn" onclick="showStep(2)">I'm sorry, let's go back 🥺</button>
   </div>
 
-  <!-- STEP 3B: If She Said NO (Opens Envelope for Letter) -->
-  <div class="card" id="envelopeResult" style="display: none;">
+  <!-- STEP 3B: If She was Honest (The Gifts Page) -->
+  <div class="card" id="gifts">
+    <button class="back-btn" onclick="showStep(2)">← Back</button>
     <h1>Good girl! 🥰</h1>
-    <p>Here is a secret letter meant only for you. Tap the envelope to open it! ✉️</p>
+    <p>Since you agreed to be my girlfriend (and were honest!), here are a few gifts for you. Tap one!</p>
     
-    <div class="envelope-wrapper" onclick="openLetter()">
-      <span class="envelope-icon">💌</span>
-      <small style="color: #ff4d6d; font-weight: bold;">Tap to open</small>
+    <div class="gift-grid">
+      <div class="gift-item" onclick="revealGift('heart')">
+        <span class="gift-icon">🎁</span>
+        <span class="gift-label">Gift #1</span>
+      </div>
+      <div class="gift-item" onclick="revealGift('flowers')">
+        <span class="gift-icon">💝</span>
+        <span class="gift-label">Gift #2</span>
+      </div>
+      <div class="gift-item" onclick="revealGift('letter')">
+        <span class="gift-icon">✉️</span>
+        <span class="gift-label">Gift #3</span>
+      </div>
     </div>
 
-    <div class="letter-box" id="letterBox">
-      <h2 style="color: #c9184a; margin-top: 0;">My Love,</h2>
-      <p>
-        [WRITE YOUR CUSTOM LETTER HERE]
-        <br><br>
-        Thank you for bringing so much brightness, joy, and warmth into my life. I couldn't be happier to call you mine.
-      </p>
-      <p style="text-align: right; font-weight: bold; color: #ff4d6d;">Yours always ❤️</p>
+    <!-- Result 1: Heart -->
+    <div id="gift-heart" class="result-panel">
+      <h1>The first gift is...</h1>
+      <div style="font-size: 5rem; margin: 20px 0;">My Heart ❤️</div>
+      <p>It belongs entirely to you now. Please handle with care! 🥰</p>
+    </div>
+
+    <!-- Result 2: Flowers -->
+    <div id="gift-flowers" class="result-panel">
+      <h1>Some flowers for you! 💐</h1>
+      <!-- PERSONALIZE: Add a link to a Google Image of flowers here -->
+      <img src="YOUR_FLOWER_IMAGE_URL_HERE" alt="Flowers for you" class="photo">
+      <p>They aren't as beautiful as you, but I hope they make you smile today! 🌹🌸🌼</p>
+    </div>
+
+    <!-- Result 3: Letter -->
+    <div id="gift-letter" class="result-panel">
+      <div class="letter-box">
+        <h2 style="color: var(--heading-color);">My Love,</h2>
+        <p>
+          [WRITE YOUR CUSTOM, HEARTFELT LETTER HERE. You can use multiple paragraphs by adding more <br> tags for spacing.]
+          <br><br>
+          Thank you for choosing me. I promise to cherish you every single day. I love you!
+        </p>
+        <p style="text-align: right; font-weight: bold; color: var(--primary-color);">Yours always ❤️</p>
+      </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
   <script>
+    // Utility function to navigate between cards
+    function showStep(stepId) {
+      // Hide all cards
+      const cards = document.querySelectorAll('.card');
+      cards.forEach(card => card.classList.remove('show'));
+      
+      // Handle numeric step IDs vs string IDs
+      let targetId = (typeof stepId === 'number') ? `step${stepId}` : stepId;
+      
+      // Show target card
+      const targetCard = document.getElementById(targetId);
+      targetCard.classList.add('show');
+
+      // Add confetti on Step 2 (First Yes)
+      if(targetId === 'step2') {
+        confetti({ particleCount: 100, spread: 60, origin: { y: 0.6 } });
+      }
+    }
+
+    // runaway "No" button logic
     function moveNoButton() {
       const noBtn = document.getElementById('noBtn');
-      const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - 40);
-      const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 40);
+      // Calculate boundaries based on screen size, ensuring button stays fully visible
+      const maxX = window.innerWidth - 140; // width + padding/margin
+      const maxY = window.innerHeight - 70; // height + padding/margin
+      
+      const x = Math.random() * maxX;
+      const y = Math.random() * maxY;
       
       noBtn.style.position = 'fixed';
-      noBtn.style.left = `${x}px`;
-      noBtn.style.top = `${y}px`;
+      noBtn.style.left = `${Math.max(10, x)}px`; // Ensure at least 10px from left
+      noBtn.style.top = `${Math.max(10, y)}px`;  // Ensure at least 10px from top
     }
 
-    function goToStep2() {
-      document.getElementById('step1').style.display = 'none';
-      document.getElementById('sadResult').style.display = 'none';
-      document.getElementById('step2').style.display = 'block';
-
-      confetti({
-        particleCount: 100,
-        spread: 60,
-        origin: { y: 0.6 }
-      });
-    }
-
-    function showSadResult() {
-      document.getElementById('step2').style.display = 'none';
-      document.getElementById('sadResult').style.display = 'block';
-    }
-
-    function showEnvelopeResult() {
-      document.getElementById('step2').style.display = 'none';
-      document.getElementById('envelopeResult').style.display = 'block';
-    }
-
-    function openLetter() {
-      const letter = document.getElementById('letterBox');
-      letter.style.display = 'block';
+    // Logic to reveal a specific gift and trigger relevant animation
+    function revealGift(giftType) {
+      // Hide all result panels first
+      const panels = document.querySelectorAll('.result-panel');
+      panels.forEach(panel => panel.style.display = 'none');
       
-      confetti({
-        particleCount: 150,
-        spread: 80,
-        origin: { y: 0.6 }
-      });
+      // Show the selected panel
+      document.getElementById(`gift-${giftType}`).style.display = 'block';
+
+      // Special animations/confetti for specific gifts
+      if(giftType === 'heart') {
+        // HEART EMOJI CONFETTI
+        const scalar = 3;
+        const heart = confetti.shapeFromText({ text: '❤️', scalar });
+        confetti({ shapes: [heart], particleCount: 50, spread: 80, origin: { y: 0.7 } });
+      } else if (giftType === 'letter') {
+        // Standard celebratory confetti
+        confetti({ particleCount: 100, spread: 70, origin: { y: 0.7 } });
+      }
     }
   </script>
 </body>
